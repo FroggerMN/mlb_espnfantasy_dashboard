@@ -17,19 +17,19 @@ logger = logging.getLogger(__name__)
 
 # Consider moving this to a config file or database for easier updates
 # Or make it user-configurable via the Streamlit UI
-PITCHERLIST_RANKINGS_LIST: List[Tuple[str, str, str]] = [
-    ('https://pitcherlist.com/top-100-starting-pitchers-for-2025-fantasy-baseball-week-8-5-19/', '4', 'sp_100_df'),
-    ('https://pitcherlist.com/rp-ranks-5-23-the-top-100-relievers-for-savehold-leagues//', '3', 'sh_100_df'),
-    ('https://pitcherlist.com/top-150-hitters-for-fantasy-baseball-2025-week-8-5-22/', '1', 'hitters_150_df')
+PITCHERLIST_RANKINGS_LIST: List[Tuple[str, int, str]] = [
+    ('https://pitcherlist.com/top-100-starting-pitchers-for-2025-fantasy-baseball-week-8-5-19/', 0, 'sp_100_df'),
+    ('https://pitcherlist.com/rp-ranks-5-23-the-top-100-relievers-for-savehold-leagues//', 2, 'sh_100_df'),
+    ('https://pitcherlist.com/top-150-hitters-for-fantasy-baseball-2025-week-8-5-22/', 0, 'hitters_150_df')
 ]
 
-def get_pitcherlist_tables(url: str, table_number: str) -> pd.DataFrame:
+def get_pitcherlist_tables(url: str, table_index: int = 0) -> pd.DataFrame:
     """
     Fetches and processes table data from the specified URL.
 
     Args:
         url (str): The URL of the webpage containing the table.
-        table_number (str): The identifier of the table on the webpage (e.g., '1', '2').
+        table_index (int): The 0-based index of the ranking table to select among valid tables.
 
     Returns:
         pd.DataFrame: Processed DataFrame with pitcher list data.
@@ -37,32 +37,47 @@ def get_pitcherlist_tables(url: str, table_number: str) -> pd.DataFrame:
     """
     try:
         dfs = get_tables(url)
-        df = dfs[f'df_{table_number}'].copy()
-        df.rename(columns={'Pitcher': 'Player Names', 'Hitter': 'Player Names', 'Player': 'Player Names'}, inplace=True)
-        return df
-    except KeyError:
-        logger.error(f"Table 'df_{table_number}' not found in {url}")
-        return pd.DataFrame()
+        valid_dfs = []
+        for key, df_candidate in dfs.items():
+            cols = list(df_candidate.columns)
+            # Find tables that have 'Rank' and some player column
+            if 'Rank' in cols and any(c in cols for c in ['Pitcher', 'Hitter', 'Player', 'Name']):
+                df_candidate = df_candidate.copy()
+                df_candidate.rename(columns={'Pitcher': 'Player Names', 'Hitter': 'Player Names', 'Player': 'Player Names', 'Name': 'Player Names'}, inplace=True)
+                valid_dfs.append(df_candidate)
+        
+        if not valid_dfs:
+            logger.error(f"No valid ranking tables found in {url}")
+            return pd.DataFrame()
+            
+        if table_index < len(valid_dfs):
+            return valid_dfs[table_index].copy()
+        
+        # Default to the largest table if index is out of bounds or concatenate if needed, 
+        # but to be safe returning the last one as it usually contains the full summary.
+        logger.warning(f"table_index {table_index} out of bounds for valid tables in {url}. Returning last valid table.")
+        return valid_dfs[-1].copy()
+
     except Exception as e:
-        logger.exception(f"Error fetching or processing table from {url}")
+        logger.exception(f"Error fetching or processing table from {url}: {e}")
         return pd.DataFrame()
 
-def get_pitcherlist_rankings(pitchersList_rankings_list: List[Tuple[str, str, str]]) -> Dict[str, pd.DataFrame]:
+def get_pitcherlist_rankings(pitchersList_rankings_list: List[Tuple[str, int, str]]) -> Dict[str, pd.DataFrame]:
     """
     Fetches and processes player rankings from a list of PitcherList URLs.
 
     Args:
-        pitchersList_rankings_list (List[Tuple[str, str, str]]): A list of tuples, where each tuple
-            contains the URL, table number, and a unique identifier for the ranking (e.g., 'sp_100_df').
+        pitchersList_rankings_list (List[Tuple[str, int, str]]): A list of tuples, where each tuple
+            contains the URL, table index (0-based), and a unique identifier for the ranking (e.g., 'sp_100_df').
 
     Returns:
         Dict[str, pd.DataFrame]: A dictionary where keys are the unique identifiers for the rankings
             and values are the corresponding processed DataFrames.
     """
     pitcherList_dfs: Dict[str, pd.DataFrame] = {}
-    for url, table_number, ranking_id in pitchersList_rankings_list:
+    for url, table_index, ranking_id in pitchersList_rankings_list:
         try:
-            df = get_pitcherlist_tables(url, table_number)
+            df = get_pitcherlist_tables(url, int(table_index))
             df = clean_players_names(df, 'Player Names')
             pitcherList_dfs[ranking_id] = df
         except Exception as e:

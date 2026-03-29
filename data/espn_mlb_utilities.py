@@ -181,9 +181,22 @@ def stat_melt_and_rename(df: pd.DataFrame, id_vars: List[str], value_vars: List[
         pd.DataFrame: The melted and renamed DataFrame.
     """
     try:
-        melted = pd.melt(df, id_vars=id_vars, value_vars=value_vars, var_name=var_name, value_name=value_name)
-        melted.rename(columns={team_col: 'teamId'}, inplace=True)
-        melted['StatId'] = melted['StatId'].str.extract(r'(\d+)', expand=False).astype(int) # Explicitly convert to int
+        # Filter id_vars and value_vars to only include columns present in the DataFrame
+        existing_id_vars = [col for col in id_vars if col in df.columns]
+        existing_value_vars = [col for col in value_vars if col in df.columns]
+
+        if not existing_value_vars:
+            logger.warning("None of the specified value_vars are present in the DataFrame.")
+            return pd.DataFrame()
+
+        melted = pd.melt(df, id_vars=existing_id_vars, value_vars=existing_value_vars, var_name=var_name, value_name=value_name)
+        
+        if team_col in melted.columns:
+            melted.rename(columns={team_col: 'teamId'}, inplace=True)
+            
+        if 'StatId' in melted.columns:
+            melted['StatId'] = melted['StatId'].str.extract(r'(\d+)', expand=False).astype(int) # Explicitly convert to int
+            
         return melted
     except Exception as e:
         logger.exception("Error in stat_melt_and_rename")
