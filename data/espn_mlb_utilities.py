@@ -153,6 +153,10 @@ def get_roster_info(mRoster: Dict, mTeams: Dict) -> pd.DataFrame:
 
     teamIds_player_df = pd.DataFrame(records)
 
+    if teamIds_player_df.empty:
+        logger.warning("No valid player records extracted from mRoster.")
+        return pd.DataFrame()
+
     teamNames_df = get_league_info(mTeams)
     if teamNames_df.empty:
         logger.warning("Could not retrieve league info")

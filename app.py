@@ -3,6 +3,7 @@ import streamlit as st
 
 from data.fetch_espn_data import fetch_and_save_view
 from data.espn_mlb_utilities import get_roster_info
+from utils.logging_config import configure_logging
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -119,6 +120,7 @@ def fetch_and_process_data():
 
 def main():
     """Main application logic for app.py."""
+    configure_logging()  # Must be first — configures handlers for all child loggers
     st.set_page_config(page_title="MLB Fantasy Dashboard", layout="wide", page_icon="⚾")
     
     initialize_session_state()

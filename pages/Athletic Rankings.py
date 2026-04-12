@@ -10,6 +10,7 @@ from pandas.api.types import (
 )
 
 from utils.rankings_utilities import clean_players_names
+from utils.ui import filter_dataframe
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -65,51 +66,6 @@ def load_and_process_rankings(file_list: List[str], roster_df: pd.DataFrame) -> 
     
     return rankings_dict
 
-
-def filter_dataframe(df: pd.DataFrame, key_prefix: str) -> pd.DataFrame:
-    """Adds UI for filtering the dataframe based on columns."""
-    modify = st.checkbox("Add filters", value=True, key=f"{key_prefix}_filter_toggle")
-    if not modify:
-        return df
-
-    df_filtered = df.copy()
-
-    for col in df_filtered.columns:
-        if is_object_dtype(df_filtered[col]):
-            try:
-                df_filtered[col] = pd.to_datetime(df_filtered[col], format="%m/%d/%Y")
-            except Exception:
-                pass
-        elif is_datetime64_any_dtype(df_filtered[col]):
-            if df_filtered[col].dt.tz is not None:
-                df_filtered[col] = df_filtered[col].dt.tz_localize(None)
-
-    to_filter_columns = st.multiselect(
-        "Filter dataframe on",
-        df_filtered.columns,
-        default=["Team Names"] if "Team Names" in df_filtered.columns else None,
-        key=f"{key_prefix}_filter_columns",
-    )
-
-    for column in to_filter_columns:
-        if df_filtered[column].nunique() < 15:
-            default_vals = (
-                ["RP's, We Have Da Heat", "Available"]
-                if column == "Team Names"
-                else list(df_filtered[column].unique())
-            )
-            # Filter default vals to only those present in df
-            valid_defaults = [val for val in default_vals if val in df_filtered[column].unique()]
-
-            user_vals = st.multiselect(
-                f"Values for {column}",
-                list(df_filtered[column].unique()),
-                default=valid_defaults,
-                key=f"{key_prefix}_{column}_select",
-            )
-            df_filtered = df_filtered[df_filtered[column].isin(user_vals)]
-
-    return df_filtered
 
 
 def main():
