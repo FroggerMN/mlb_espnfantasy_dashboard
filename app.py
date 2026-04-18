@@ -11,15 +11,19 @@ logger = logging.getLogger(__name__)
 # --- Constants ---
 DEFAULT_YEAR = 2026
 DEFAULT_LEAGUE_ID = 64175
-DEFAULT_SCORING_PERIOD_ID = 1
-DEFAULT_SCORING_PERIOD_WEEK = 14
+DEFAULT_SCORING_PERIOD_WEEK = 2
+
+
+def week_to_scoring_period(week: int) -> int:
+    """Converts a fantasy week number to the ESPN scoring period ID (first day of that week)."""
+    return week * 7 + 1
+
 
 def initialize_session_state():
     """Initializes session state variables if they don't exist."""
     session_defaults = {
         "YEAR": DEFAULT_YEAR,
         "LEAGUE_ID": DEFAULT_LEAGUE_ID,
-        "SCORING_PERIOD_ID": DEFAULT_SCORING_PERIOD_ID,
         "SCORING_PERIOD_WEEK": DEFAULT_SCORING_PERIOD_WEEK,
         "ESPN_S2": "",
         "SWID": "",
@@ -27,33 +31,42 @@ def initialize_session_state():
     for key, val in session_defaults.items():
         if key not in st.session_state:
             st.session_state[key] = val
+    # Always derive SCORING_PERIOD_ID from the current week
+    st.session_state["SCORING_PERIOD_ID"] = week_to_scoring_period(
+        st.session_state["SCORING_PERIOD_WEEK"]
+    )
 
 
 def render_sidebar():
     """Renders the sidebar for configuring league settings."""
     st.sidebar.header("League Settings")
-    
+
     st.session_state.YEAR = st.sidebar.number_input(
-        "Year", 
-        value=st.session_state.YEAR, 
+        "Year",
+        value=st.session_state.YEAR,
         step=1
     )
     st.session_state.LEAGUE_ID = st.sidebar.number_input(
-        "League ID", 
-        value=st.session_state.LEAGUE_ID, 
+        "League ID",
+        value=st.session_state.LEAGUE_ID,
         step=1
     )
-    st.session_state.SCORING_PERIOD_ID = st.sidebar.number_input(
-        "Scoring Period ID", 
-        value=st.session_state.SCORING_PERIOD_ID, 
+
+    selected_week = st.sidebar.number_input(
+        "Scoring Week",
+        value=st.session_state.SCORING_PERIOD_WEEK,
+        min_value=1,
         step=1,
-        help="The specific period to fetch ESPN json views for."
+        help="Select the fantasy week to analyze. The ESPN Scoring Period ID is derived automatically."
     )
-    st.session_state.SCORING_PERIOD_WEEK = st.sidebar.number_input(
-        "Max Matchup Week", 
-        value=st.session_state.SCORING_PERIOD_WEEK, 
-        step=1,
-        help="Used to filter charts in the Category Rolling Average page."
+    # Update week and re-derive the scoring period ID whenever the week changes
+    if selected_week != st.session_state.SCORING_PERIOD_WEEK:
+        st.session_state.SCORING_PERIOD_WEEK = selected_week
+        st.session_state.SCORING_PERIOD_ID = week_to_scoring_period(selected_week)
+
+    st.sidebar.caption(
+        f"📅 ESPN Scoring Period ID: **{st.session_state.SCORING_PERIOD_ID}** "
+        f"(Week {st.session_state.SCORING_PERIOD_WEEK})"
     )
     
     st.sidebar.subheader("Authentication Cookies")
@@ -76,6 +89,7 @@ def fetch_and_process_data():
     """Fetches ESPN data, processes the roster, and populates session state."""
     with st.spinner("Fetching data from ESPN..."):
         try:
+            
             mTeam = fetch_and_save_view(
                 st.session_state.YEAR,
                 st.session_state.LEAGUE_ID,
