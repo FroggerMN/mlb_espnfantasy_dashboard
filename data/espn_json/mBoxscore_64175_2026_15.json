@@ -5555,7 +5555,9 @@
                                     "id": 5080771,
                                     "lastName": "Stewart",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -7165,7 +7167,9 @@
                                     "id": 5080771,
                                     "lastName": "Stewart",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -9129,7 +9133,9 @@
                                     "id": 42433,
                                     "lastName": "Lodolo",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -11330,7 +11336,9 @@
                                     "id": 4917694,
                                     "lastName": "De La Cruz",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -11846,7 +11854,9 @@
                                     "id": 33403,
                                     "lastName": "Pagan",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -13707,7 +13717,9 @@
                                     "id": 4917694,
                                     "lastName": "De La Cruz",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -13953,7 +13965,9 @@
                                     "id": 33403,
                                     "lastName": "Pagan",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -15701,7 +15715,9 @@
                                     "id": 40950,
                                     "lastName": "Santillan",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -17636,7 +17652,9 @@
                                     "id": 40950,
                                     "lastName": "Santillan",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -25568,7 +25586,9 @@
                                     "id": 41307,
                                     "lastName": "Marte",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -27589,7 +27609,9 @@
                                     "id": 41307,
                                     "lastName": "Marte",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -29322,7 +29344,9 @@
                                     "id": 4422899,
                                     "lastName": "McLain",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -31438,7 +31462,9 @@
                                     "id": 32367,
                                     "lastName": "Suarez",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -32194,7 +32220,9 @@
                                     "id": 4722857,
                                     "lastName": "Steer",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "NOTSTARTING"
+                                    },
                                     "stats": [
                                         {
                                             "externalId": "401814858",
@@ -33516,7 +33544,9 @@
                                     "id": 32367,
                                     "lastName": "Suarez",
                                     "proTeamId": 17,
-                                    "starterStatusByProGame": {},
+                                    "starterStatusByProGame": {
+                                        "401814993": "STARTING"
+                                    },
                                     "stats": [
                                         {
                                             "id": "05null",
@@ -38498,6 +38528,7 @@
                                         "401814818": "PROBABLE",
                                         "401814876": "PROBABLE",
                                         "401814964": "PROBABLE",
+                                        "401814993": "NOTSTARTING",
                                         "401815027": "PROBABLE",
                                         "401815119": "PROBABLE"
                                     },
@@ -40628,6 +40659,7 @@
                                         "401814818": "PROBABLE",
                                         "401814876": "PROBABLE",
                                         "401814964": "PROBABLE",
+                                        "401814993": "NOTSTARTING",
                                         "401815027": "PROBABLE",
                                         "401815119": "PROBABLE"
                                     },
