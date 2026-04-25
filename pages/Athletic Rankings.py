@@ -10,7 +10,14 @@ from pandas.api.types import (
 )
 
 from utils.rankings_utilities import clean_players_names
-from utils.ui import filter_dataframe
+from utils.ui import (
+    inject_notion_css,
+    notion_page_header,
+    notion_card_begin,
+    notion_card_end,
+    notion_spacer,
+    filter_dataframe,
+)
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -71,10 +78,21 @@ def load_and_process_rankings(file_list: List[str], roster_df: pd.DataFrame) -> 
 def main():
     """Main Streamlit page logic."""
     st.set_page_config(page_title=PAGE_TITLE, layout="wide")
-    st.title(PAGE_TITLE)
+    inject_notion_css()
+
+    notion_page_header(
+        PAGE_TITLE,
+        "Player rankings sourced from The Athletic, cross-referenced with your roster.",
+    )
 
     if SESSION_STATE_ROSTER_KEY not in st.session_state or st.session_state[SESSION_STATE_ROSTER_KEY].empty:
-        st.error("🚨 No roster data available in session state.")
+        notion_card_begin()
+        st.markdown(
+            '<p style="font-size:14px; color:#6F6F6F;">No roster data available. '
+            'Return to the home page and click <strong>Fetch Latest Data</strong>.</p>',
+            unsafe_allow_html=True,
+        )
+        notion_card_end()
         return
 
     roster_df = st.session_state[SESSION_STATE_ROSTER_KEY]
@@ -90,13 +108,16 @@ def main():
         st.warning("No ranking data could be processed.")
         return
 
+    notion_spacer(8)
     tabs = st.tabs(list(rankings_dict.keys()))
 
     for i, (key, df) in enumerate(rankings_dict.items()):
         with tabs[i]:
-            st.subheader(key)
+            notion_spacer(8)
             filtered_df = filter_dataframe(df, key)
-            st.dataframe(filtered_df, width='stretch')
+            notion_card_begin()
+            st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+            notion_card_end()
 
 
 if __name__ == "__main__":

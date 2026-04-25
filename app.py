@@ -5,6 +5,15 @@ import streamlit as st
 from data.fetch_espn_data import fetch_and_save_view
 from data.espn_mlb_utilities import get_roster_info, get_category_stats, get_standings_table
 from utils.logging_config import configure_logging
+from utils.ui import (
+    inject_notion_css,
+    notion_page_header,
+    notion_section_header,
+    notion_card_begin,
+    notion_card_end,
+    notion_badge,
+    notion_spacer,
+)
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -38,52 +47,79 @@ def initialize_session_state():
     )
 
 
-def render_sidebar():
-    """Renders the sidebar for configuring league settings."""
-    st.sidebar.header("League Settings")
+def render_config_panel():
+    """Renders the league configuration panel in the main content area."""
+    notion_section_header("League Configuration", "Set your league parameters and ESPN credentials to get started.")
 
-    st.session_state.YEAR = st.sidebar.number_input(
-        "Year",
-        value=st.session_state.YEAR,
-        step=1
-    )
-    st.session_state.LEAGUE_ID = st.sidebar.number_input(
-        "League ID",
-        value=st.session_state.LEAGUE_ID,
-        step=1
-    )
+    notion_card_begin()
 
-    selected_week = st.sidebar.number_input(
-        "Scoring Week",
-        value=st.session_state.SCORING_PERIOD_WEEK,
-        min_value=1,
-        step=1,
-        help="Select the fantasy week to analyze. The ESPN Scoring Period ID is derived automatically."
-    )
-    # Update week and re-derive the scoring period ID whenever the week changes
-    if selected_week != st.session_state.SCORING_PERIOD_WEEK:
-        st.session_state.SCORING_PERIOD_WEEK = selected_week
-        st.session_state.SCORING_PERIOD_ID = week_to_scoring_period(selected_week)
+    # Row 1: League settings
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
 
-    st.sidebar.caption(
-        f"📅 ESPN Scoring Period ID: **{st.session_state.SCORING_PERIOD_ID}** "
-        f"(Week {st.session_state.SCORING_PERIOD_WEEK})"
-    )
-    
-    st.sidebar.subheader("Authentication Cookies")
-    st.session_state.ESPN_S2 = st.sidebar.text_input(
-        "ESPN_S2 Cookie", 
-        value=st.session_state.ESPN_S2, 
-        type="password"
-    )
-    st.session_state.SWID = st.sidebar.text_input(
-        "SWID Cookie", 
-        value=st.session_state.SWID, 
-        type="password"
-    )
+    with col1:
+        st.session_state.YEAR = st.number_input(
+            "Year",
+            value=st.session_state.YEAR,
+            step=1,
+            key="config_year",
+        )
+    with col2:
+        st.session_state.LEAGUE_ID = st.number_input(
+            "League ID",
+            value=st.session_state.LEAGUE_ID,
+            step=1,
+            key="config_league_id",
+        )
+    with col3:
+        selected_week = st.number_input(
+            "Scoring Week",
+            value=st.session_state.SCORING_PERIOD_WEEK,
+            min_value=1,
+            step=1,
+            help="Select the fantasy week to analyze.",
+            key="config_week",
+        )
+        if selected_week != st.session_state.SCORING_PERIOD_WEEK:
+            st.session_state.SCORING_PERIOD_WEEK = selected_week
+            st.session_state.SCORING_PERIOD_ID = week_to_scoring_period(selected_week)
 
-    if st.sidebar.button("Fetch Latest Data"):
+    with col4:
+        st.markdown(
+            f'<p style="font-size:12px; color:#6F6F6F; text-transform:uppercase; '
+            f'letter-spacing:0.04em; margin-bottom:4px;">Scoring Period ID</p>'
+            f'<p style="font-size:22px; font-weight:600; color:#2F2F2F; margin:0;">'
+            f'{st.session_state.SCORING_PERIOD_ID}</p>'
+            f'<p style="font-size:12px; color:#9F9F9F; margin:0;">Week {st.session_state.SCORING_PERIOD_WEEK}</p>',
+            unsafe_allow_html=True,
+        )
+
+    notion_spacer(12)
+
+    # Row 2: Auth credentials
+    with st.expander("Authentication Cookies", expanded=False):
+        auth1, auth2 = st.columns(2)
+        with auth1:
+            st.session_state.ESPN_S2 = st.text_input(
+                "ESPN_S2 Cookie",
+                value=st.session_state.ESPN_S2,
+                type="password",
+                key="config_espn_s2",
+            )
+        with auth2:
+            st.session_state.SWID = st.text_input(
+                "SWID Cookie",
+                value=st.session_state.SWID,
+                type="password",
+                key="config_swid",
+            )
+
+    notion_spacer(8)
+
+    # Fetch button
+    if st.button("Fetch Latest Data", key="fetch_data_btn"):
         fetch_and_process_data()
+
+    notion_card_end()
 
 
 def fetch_and_process_data():
@@ -136,13 +172,41 @@ def fetch_and_process_data():
             st.error(f"An error occurred while fetching data: {e}")
 
 
+def render_roster_status():
+    """Renders the current roster data status card."""
+    notion_section_header("Roster Data")
+
+    notion_card_begin()
+    if "ROSTERS_DF" in st.session_state and not st.session_state.ROSTERS_DF.empty:
+        notion_badge("Loaded", "success")
+        notion_spacer(12)
+        st.dataframe(st.session_state.ROSTERS_DF, use_container_width=True, hide_index=True)
+    else:
+        notion_badge("Not loaded", "warning")
+        notion_spacer(8)
+        st.markdown(
+            '<p style="font-size:14px; color:#6F6F6F;">Click <strong>Fetch Latest Data</strong> above to load roster data.</p>',
+            unsafe_allow_html=True,
+        )
+    notion_card_end()
+
+
 def render_standings_section():
     """Renders the league standings + season-to-date category stats table."""
-    st.subheader("🏆 League Standings & Category Stats")
+    notion_section_header(
+        "League Standings & Category Stats",
+        "Season-to-date performance across all 10 scoring categories.",
+    )
 
     mteam = st.session_state.get("MTEAM_DATA")
     if not mteam:
-        st.info("Standings not available. Please click **Fetch Latest Data** in the sidebar.")
+        notion_card_begin()
+        st.markdown(
+            '<p style="font-size:14px; color:#6F6F6F;">Standings not available. '
+            'Click <strong>Fetch Latest Data</strong> above to load.</p>',
+            unsafe_allow_html=True,
+        )
+        notion_card_end()
         return
 
     with st.spinner("Building standings table…"):
@@ -157,8 +221,17 @@ def render_standings_section():
         st.warning("Could not build standings table. The mBoxscore JSON may not be available for this scoring period.")
         return
 
+    notion_card_begin()
+
     # View mode toggle
-    view_mode = st.radio("Table Value Format:", ["Stat Totals", "Z-Scores"], horizontal=True)
+    view_mode = st.radio(
+        "View format",
+        ["Stat Totals", "Z-Scores"],
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+
+    notion_spacer(8)
 
     # --- Colour-code stat columns: green = top 3, red = bottom 3 ---
     from utils.config import TARGET_STATS, STATS_LOW_IS_BETTER
@@ -212,43 +285,47 @@ def render_standings_section():
 
     st.dataframe(styled, use_container_width=True, hide_index=True, height=460)
     st.caption(
-        "Counting stats (R, HR, RBI, SB, K, W, SVHD) are **season totals**. "
-        "Ratio stats (AVG, ERA, WHIP) are **season-to-date**, recalculated from component sums. "
-        "🟢 Top 3 &nbsp;|&nbsp; 🔴 Bottom 3 per category. "
-        "Raw component totals (H, AB, ER, etc.) are at the far right."
+        "Counting stats (R, HR, RBI, SB, K, W, SVHD) are season totals. "
+        "Ratio stats (AVG, ERA, WHIP) are season-to-date, recalculated from component sums. "
+        "Top 3 highlighted green · Bottom 3 highlighted red per category."
     )
+    notion_card_end()
 
 
 def main():
     """Main application logic for app.py."""
     configure_logging()  # Must be first — configures handlers for all child loggers
     st.set_page_config(page_title="MLB Fantasy Dashboard", layout="wide", page_icon="⚾")
+    inject_notion_css()
     
     initialize_session_state()
-    render_sidebar()
-    
-    st.title("⚾ MLB Fantasy Dashboard")
-    st.markdown("""
-        Welcome to the **MLB Fantasy Dashboard**! 
-        
-        This dashboard uses the ESPN Fantasy Baseball API to manage your 12-team Head-to-Head (H2H) league. 
-        Use the sidebar to configure your league ID, Year, Authentication cookies (SWID/ESPN_s2), and the particular Scoring Period you want to analyze.
-        
-        ### Getting Started
-        1. Fill in your credentials on the sidebar.
-        2. Click **Fetch Latest Data**.
-        3. Navigate to the pages on the left (e.g., *Athletic Rankings*, *Category Rolling Average*, etc.) for specific analyses based on your current rosters.
-        
-        ### Current Roster Data Status
-    """)
-    
-    if "ROSTERS_DF" in st.session_state and not st.session_state.ROSTERS_DF.empty:
-        st.success("✅ Roster Data is currently loaded in the session state!")
-        st.dataframe(st.session_state.ROSTERS_DF, use_container_width=True)
-    else:
-        st.warning("⚠️ Roster Data has not been loaded. Please hit **Fetch Latest Data** on the sidebar.")
 
-    st.divider()
+    # --- Page Header ---
+    notion_page_header(
+        "MLB Fantasy Dashboard",
+        "ESPN Fantasy Baseball API dashboard for your 12-team H2H league. "
+        "Configure your league below, fetch data, then explore analysis pages from the sidebar.",
+    )
+
+    notion_spacer(8)
+
+    # --- Getting Started (collapsed by default) ---
+    with st.expander("Getting Started", expanded=False):
+        st.markdown("""
+1. Enter your league credentials below.
+2. Click **Fetch Latest Data**.
+3. Navigate to the analysis pages in the sidebar — *Athletic Rankings*, *Category Rolling Average*, *PitchersList Rankings*.
+        """)
+
+    notion_spacer(8)
+
+    # --- League Configuration Panel (moved from sidebar) ---
+    render_config_panel()
+
+    # --- Roster Status ---
+    render_roster_status()
+
+    # --- Standings ---
     render_standings_section()
 
 
