@@ -83,6 +83,20 @@ def fetch_sit_start_data(url: str) -> pd.DataFrame:
                             })
                             
         result_df = pd.DataFrame(all_pitchers)
+
+        # Split 'Sit/Start Rating' (format: Action-Rating) into two columns
+        if not result_df.empty and 'Sit/Start Rating' in result_df.columns:
+            split_cols = result_df['Sit/Start Rating'].str.split('-', n=1, expand=True)
+            result_df['Start/Sit Action'] = split_cols[0].str.strip()
+            result_df['Start/Sit Rating'] = split_cols[1].str.strip() if 1 in split_cols.columns else ''
+            result_df.drop(columns=['Sit/Start Rating'], inplace=True)
+
+        # Reorder columns
+        desired_cols = ['Player Names', 'MLB Team', 'Opponent', 'Date',
+                        'Start/Sit Rating', 'Start/Sit Action', 'Team Names']
+        existing_cols = [c for c in desired_cols if c in result_df.columns]
+        result_df = result_df[existing_cols]
+
         logger.info(f"Successfully extracted {len(result_df)} pitcher matchups.")
         return result_df
     except Exception as e:

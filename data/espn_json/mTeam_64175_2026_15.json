@@ -898,7 +898,7 @@
         "activatedDate": 1772569647742,
         "createdAsLeagueType": 0,
         "currentLeagueType": 0,
-        "currentMatchupPeriod": 1,
+        "currentMatchupPeriod": 3,
         "finalScoringPeriod": 180,
         "firstScoringPeriod": 1,
         "isActive": true,
@@ -908,7 +908,7 @@
         "isToBeDeleted": false,
         "isViewable": false,
         "isWaiverOrderEdited": false,
-        "latestScoringPeriod": 5,
+        "latestScoringPeriod": 25,
         "previousSeasons": [
             2015,
             2016,
@@ -922,10 +922,10 @@
             2024,
             2025
         ],
-        "standingsUpdateDate": 1774772513053,
+        "standingsUpdateDate": 1776501357900,
         "teamsJoined": 12,
-        "transactionScoringPeriod": 13,
-        "waiverLastExecutionDate": 1774772512646,
+        "transactionScoringPeriod": 27,
+        "waiverLastExecutionDate": 1776501357742,
         "waiverProcessStatus": {
             "2026-03-26T08:24:52.718+00:00": 10,
             "2026-03-28T08:34:51.116+00:00": 1
@@ -952,7 +952,7 @@
             "owners": [
                 "{3F15FCEB-EB45-4EE7-B1B1-92B76369484D}"
             ],
-            "playoffSeed": 12,
+            "playoffSeed": 10,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -962,25 +962,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 7,
+                    "percentage": 0.25,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 2
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 6.5,
+                    "losses": 7,
+                    "percentage": 0.25,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 2
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -994,33 +994,59 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 6.5,
+                    "losses": 7,
+                    "percentage": 0.25,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 2
                 }
             },
-            "tradeBlock": {},
+            "tradeBlock": {
+                "players": {
+                    "42178": "ON_THE_BLOCK"
+                }
+            },
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 3,
-                "drops": 2,
+                "acquisitions": 11,
+                "drops": 9,
                 "matchupAcquisitionTotals": {
-                    "2": 3
+                    "2": 5,
+                    "3": 4,
+                    "4": 2
                 },
                 "misc": 0,
-                "moveToActive": 4,
-                "moveToIR": 1,
+                "moveToActive": 14,
+                "moveToIR": 2,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 1
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 404.0,
+                "1": 106.0,
+                "2": 0.26237624,
+                "20": 58.0,
+                "21": 59.0,
+                "23": 7.0,
+                "34": 248.0,
+                "35": 359.0,
+                "37": 74.0,
+                "39": 36.0,
+                "41": 1.33064516,
+                "45": 45.0,
+                "47": 4.89919355,
+                "48": 72.0,
+                "5": 12.0,
+                "53": 4.0,
+                "57": 1.0,
+                "60": 6.0,
+                "83": 7.0
+            },
             "waiverRank": 2
         },
         {
@@ -1039,7 +1065,7 @@
             "owners": [
                 "{37341F73-FA01-4D2B-82CC-559351D577CE}"
             ],
-            "playoffSeed": 11,
+            "playoffSeed": 1,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1060,52 +1086,75 @@
                 },
                 "division": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 1,
+                    "percentage": 0.9,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 9
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 1,
+                    "percentage": 0.9,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 9
                 },
                 "overall": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 1,
+                    "percentage": 0.9,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 9
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 0,
-                "drops": 0,
-                "matchupAcquisitionTotals": {},
+                "acquisitions": 3,
+                "drops": 1,
+                "matchupAcquisitionTotals": {
+                    "2": 2,
+                    "3": 1
+                },
                 "misc": 0,
-                "moveToActive": 1,
-                "moveToIR": 0,
+                "moveToActive": 5,
+                "moveToIR": 2,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 1
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 344.0,
+                "1": 83.0,
+                "2": 0.24127907,
+                "20": 40.0,
+                "21": 45.0,
+                "23": 11.0,
+                "34": 219.0,
+                "35": 297.0,
+                "37": 55.0,
+                "39": 27.0,
+                "41": 1.12328767,
+                "45": 28.0,
+                "47": 3.45205479,
+                "48": 76.0,
+                "5": 10.0,
+                "53": 5.0,
+                "57": 8.0,
+                "60": 0.0,
+                "83": 8.0
+            },
             "waiverRank": 4
         },
         {
@@ -1124,7 +1173,7 @@
             "owners": [
                 "{DB8A139F-AC81-4FF2-B155-AC395D7B6E8B}"
             ],
-            "playoffSeed": 10,
+            "playoffSeed": 3,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1144,55 +1193,76 @@
                     "wins": 0
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 1.0,
+                    "losses": 2,
+                    "percentage": 0.8,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 8
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 2,
+                    "percentage": 0.8,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 8
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 1.0,
+                    "losses": 2,
+                    "percentage": 0.8,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 8
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 2,
-                "drops": 0,
+                "acquisitions": 4,
+                "drops": 2,
                 "matchupAcquisitionTotals": {
-                    "2": 2
+                    "2": 2,
+                    "3": 2
                 },
                 "misc": 0,
-                "moveToActive": 2,
+                "moveToActive": 10,
                 "moveToIR": 2,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 420.0,
+                "1": 107.0,
+                "2": 0.2547619,
+                "20": 64.0,
+                "21": 58.0,
+                "23": 12.0,
+                "34": 313.0,
+                "35": 397.0,
+                "37": 65.0,
+                "39": 25.0,
+                "41": 0.86261981,
+                "45": 26.0,
+                "47": 2.2428115,
+                "48": 118.0,
+                "5": 13.0,
+                "53": 10.0,
+                "57": 0.0,
+                "60": 1.0,
+                "83": 1.0
+            },
             "waiverRank": 10
         },
         {
@@ -1211,7 +1281,7 @@
             "owners": [
                 "{41819FA4-AEF3-4BA1-A7A0-4C91342CA293}"
             ],
-            "playoffSeed": 9,
+            "playoffSeed": 11,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1221,25 +1291,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 8,
+                    "percentage": 0.2,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 2
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 7.0,
+                    "losses": 8,
+                    "percentage": 0.2,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 2
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -1253,33 +1323,54 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 7.0,
+                    "losses": 8,
+                    "percentage": 0.2,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 2
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 1,
-                "drops": 0,
+                "acquisitions": 3,
+                "drops": 1,
                 "matchupAcquisitionTotals": {
-                    "2": 1
+                    "2": 2,
+                    "3": 1
                 },
                 "misc": 0,
-                "moveToActive": 3,
-                "moveToIR": 1,
+                "moveToActive": 8,
+                "moveToIR": 3,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 430.0,
+                "1": 117.0,
+                "2": 0.27209302,
+                "20": 49.0,
+                "21": 65.0,
+                "23": 10.0,
+                "34": 209.0,
+                "35": 296.0,
+                "37": 71.0,
+                "39": 22.0,
+                "41": 1.33492823,
+                "45": 36.0,
+                "47": 4.6507177,
+                "48": 62.0,
+                "5": 10.0,
+                "53": 3.0,
+                "57": 0.0,
+                "60": 10.0,
+                "83": 10.0
+            },
             "waiverRank": 9
         },
         {
@@ -1298,7 +1389,7 @@
             "owners": [
                 "{355BB7B4-B343-4E10-AB4C-1E0EF9E47D7C}"
             ],
-            "playoffSeed": 8,
+            "playoffSeed": 12,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1308,25 +1399,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 9,
+                    "percentage": 0.1,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 1
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 8.0,
+                    "losses": 9,
+                    "percentage": 0.1,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 1
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -1340,15 +1431,15 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 8.0,
+                    "losses": 9,
+                    "percentage": 0.1,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 1
                 }
             },
             "tradeBlock": {},
@@ -1364,7 +1455,27 @@
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 340.0,
+                "1": 85.0,
+                "2": 0.25,
+                "20": 58.0,
+                "21": 43.0,
+                "23": 7.0,
+                "34": 142.0,
+                "35": 200.0,
+                "37": 46.0,
+                "39": 19.0,
+                "41": 1.37323944,
+                "45": 17.0,
+                "47": 3.23239437,
+                "48": 46.0,
+                "5": 15.0,
+                "53": 2.0,
+                "57": 4.0,
+                "60": 0.0,
+                "83": 4.0
+            },
             "waiverRank": 7
         },
         {
@@ -1383,7 +1494,7 @@
             "owners": [
                 "{9AA2128C-0411-4120-AFC3-921F6B3E21D6}"
             ],
-            "playoffSeed": 7,
+            "playoffSeed": 2,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1403,53 +1514,77 @@
                     "wins": 0
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 2.0,
+                    "losses": 2,
+                    "percentage": 0.7,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 6
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 2,
+                    "percentage": 0.7,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 6
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 2.0,
+                    "losses": 2,
+                    "percentage": 0.7,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 6
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 0,
-                "drops": 0,
-                "matchupAcquisitionTotals": {},
+                "acquisitions": 5,
+                "drops": 3,
+                "matchupAcquisitionTotals": {
+                    "2": 3,
+                    "3": 1,
+                    "4": 1
+                },
                 "misc": 0,
-                "moveToActive": 4,
-                "moveToIR": 0,
+                "moveToActive": 10,
+                "moveToIR": 3,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 367.0,
+                "1": 105.0,
+                "2": 0.28610354,
+                "20": 70.0,
+                "21": 63.0,
+                "23": 10.0,
+                "34": 235.0,
+                "35": 337.0,
+                "37": 70.0,
+                "39": 33.0,
+                "41": 1.31489362,
+                "45": 33.0,
+                "47": 3.79148936,
+                "48": 85.0,
+                "5": 20.0,
+                "53": 4.0,
+                "57": 0.0,
+                "60": 0.0,
+                "83": 0.0
+            },
             "waiverRank": 1
         },
         {
@@ -1468,7 +1603,7 @@
             "owners": [
                 "{1DE1CFA0-9A7F-4ED7-8370-9D4C8D6DF310}"
             ],
-            "playoffSeed": 6,
+            "playoffSeed": 7,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1488,55 +1623,76 @@
                     "wins": 0
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 5.0,
+                    "losses": 6,
+                    "percentage": 0.4,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 4
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 6,
+                    "percentage": 0.4,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 4
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 5.0,
+                    "losses": 6,
+                    "percentage": 0.4,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 4
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 4,
-                "drops": 2,
+                "acquisitions": 7,
+                "drops": 5,
                 "matchupAcquisitionTotals": {
-                    "2": 4
+                    "2": 5,
+                    "3": 2
                 },
                 "misc": 0,
-                "moveToActive": 1,
+                "moveToActive": 9,
                 "moveToIR": 2,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 400.0,
+                "1": 89.0,
+                "2": 0.2225,
+                "20": 55.0,
+                "21": 44.0,
+                "23": 9.0,
+                "34": 213.0,
+                "35": 289.0,
+                "37": 52.0,
+                "39": 30.0,
+                "41": 1.15492958,
+                "45": 18.0,
+                "47": 2.28169014,
+                "48": 72.0,
+                "5": 14.0,
+                "53": 4.0,
+                "57": 5.0,
+                "60": 4.0,
+                "83": 9.0
+            },
             "waiverRank": 12
         },
         {
@@ -1556,7 +1712,7 @@
             "owners": [
                 "{A46F4C68-56AC-40A7-A9D0-E23416613609}"
             ],
-            "playoffSeed": 2,
+            "playoffSeed": 4,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1576,55 +1732,76 @@
                     "wins": 0
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 1.5,
+                    "losses": 2,
+                    "percentage": 0.75,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 7
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 2,
+                    "percentage": 0.75,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 7
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 1.5,
+                    "losses": 2,
+                    "percentage": 0.75,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 7
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 3,
-                "drops": 1,
+                "acquisitions": 4,
+                "drops": 2,
                 "matchupAcquisitionTotals": {
-                    "2": 3
+                    "2": 3,
+                    "3": 1
                 },
                 "misc": 0,
-                "moveToActive": 0,
-                "moveToIR": 2,
+                "moveToActive": 3,
+                "moveToIR": 3,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 398.0,
+                "1": 105.0,
+                "2": 0.2638191,
+                "20": 65.0,
+                "21": 66.0,
+                "23": 9.0,
+                "34": 304.0,
+                "35": 408.0,
+                "37": 85.0,
+                "39": 26.0,
+                "41": 1.09539474,
+                "45": 39.0,
+                "47": 3.46381579,
+                "48": 93.0,
+                "5": 22.0,
+                "53": 4.0,
+                "57": 0.0,
+                "60": 0.0,
+                "83": 0.0
+            },
             "waiverRank": 11
         },
         {
@@ -1663,53 +1840,75 @@
                     "wins": 0
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 2.5,
+                    "losses": 3,
+                    "percentage": 0.65,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 6
                 },
                 "home": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 3,
+                    "percentage": 0.65,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 6
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 2.5,
+                    "losses": 3,
+                    "percentage": 0.65,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 6
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 0,
-                "drops": 0,
-                "matchupAcquisitionTotals": {},
+                "acquisitions": 2,
+                "drops": 2,
+                "matchupAcquisitionTotals": {
+                    "3": 2
+                },
                 "misc": 0,
-                "moveToActive": 0,
+                "moveToActive": 3,
                 "moveToIR": 0,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 392.0,
+                "1": 110.0,
+                "2": 0.28061224,
+                "20": 66.0,
+                "21": 58.0,
+                "23": 6.0,
+                "34": 241.0,
+                "35": 336.0,
+                "37": 68.0,
+                "39": 32.0,
+                "41": 1.24481328,
+                "45": 28.0,
+                "47": 3.13692946,
+                "48": 83.0,
+                "5": 17.0,
+                "53": 4.0,
+                "57": 2.0,
+                "60": 4.0,
+                "83": 6.0
+            },
             "waiverRank": 6
         },
         {
@@ -1728,7 +1927,7 @@
             "owners": [
                 "{1DC9AD60-4D95-4F25-89AD-604D95FF25C2}"
             ],
-            "playoffSeed": 4,
+            "playoffSeed": 6,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1738,25 +1937,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 4,
+                    "percentage": 0.6,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 6
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 3.0,
+                    "losses": 4,
+                    "percentage": 0.6,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 6
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -1770,15 +1969,15 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 3.0,
+                    "losses": 4,
+                    "percentage": 0.6,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
                     "ties": 0,
-                    "wins": 0
+                    "wins": 6
                 }
             },
             "tradeBlock": {},
@@ -1788,13 +1987,33 @@
                 "drops": 0,
                 "matchupAcquisitionTotals": {},
                 "misc": 0,
-                "moveToActive": 0,
+                "moveToActive": 1,
                 "moveToIR": 1,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 410.0,
+                "1": 102.0,
+                "2": 0.24878049,
+                "20": 60.0,
+                "21": 50.0,
+                "23": 12.0,
+                "34": 200.0,
+                "35": 300.0,
+                "37": 70.0,
+                "39": 29.0,
+                "41": 1.485,
+                "45": 45.0,
+                "47": 6.075,
+                "48": 82.0,
+                "5": 12.0,
+                "53": 4.0,
+                "57": 3.0,
+                "60": 3.0,
+                "83": 6.0
+            },
             "waiverRank": 5
         },
         {
@@ -1813,7 +2032,7 @@
             "owners": [
                 "{133AE0AB-2289-4A27-AAA2-27CEBBAB6915}"
             ],
-            "playoffSeed": 3,
+            "playoffSeed": 8,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1823,25 +2042,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 6,
+                    "percentage": 0.35,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 3
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 5.5,
+                    "losses": 6,
+                    "percentage": 0.35,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 3
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -1855,31 +2074,55 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 5.5,
+                    "losses": 6,
+                    "percentage": 0.35,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 1,
+                    "wins": 3
                 }
             },
             "tradeBlock": {},
             "transactionCounter": {
                 "acquisitionBudgetSpent": 0,
-                "acquisitions": 0,
-                "drops": 0,
-                "matchupAcquisitionTotals": {},
+                "acquisitions": 7,
+                "drops": 5,
+                "matchupAcquisitionTotals": {
+                    "2": 4,
+                    "3": 2,
+                    "4": 1
+                },
                 "misc": 0,
-                "moveToActive": 0,
-                "moveToIR": 0,
+                "moveToActive": 4,
+                "moveToIR": 2,
                 "paid": 0.0,
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 403.0,
+                "1": 106.0,
+                "2": 0.2630273,
+                "20": 55.0,
+                "21": 60.0,
+                "23": 14.0,
+                "34": 162.0,
+                "35": 269.0,
+                "37": 69.0,
+                "39": 39.0,
+                "41": 2.0,
+                "45": 48.0,
+                "47": 8.0,
+                "48": 64.0,
+                "5": 11.0,
+                "53": 6.0,
+                "57": 2.0,
+                "60": 3.0,
+                "83": 5.0
+            },
             "waiverRank": 3
         },
         {
@@ -1899,7 +2142,7 @@
                 "{68A4EE29-2B84-42A7-A4EE-292B8442A71B}",
                 "{4276B2A0-2516-412B-B6B2-A02516912B23}"
             ],
-            "playoffSeed": 1,
+            "playoffSeed": 9,
             "points": 0.0,
             "pointsAdjusted": 0.0,
             "pointsDelta": 0.0,
@@ -1909,25 +2152,25 @@
             "record": {
                 "away": {
                     "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "losses": 6,
+                    "percentage": 0.3,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 2
                 },
                 "division": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 6.0,
+                    "losses": 6,
+                    "percentage": 0.3,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 2
                 },
                 "home": {
                     "gamesBack": 0.0,
@@ -1941,15 +2184,15 @@
                     "wins": 0
                 },
                 "overall": {
-                    "gamesBack": 0.0,
-                    "losses": 0,
-                    "percentage": 0.0,
+                    "gamesBack": 6.0,
+                    "losses": 6,
+                    "percentage": 0.3,
                     "pointsAgainst": 0.0,
                     "pointsFor": 0.0,
                     "streakLength": 0,
                     "streakType": "NONE",
-                    "ties": 0,
-                    "wins": 0
+                    "ties": 2,
+                    "wins": 2
                 }
             },
             "tradeBlock": {},
@@ -1967,7 +2210,27 @@
                 "teamCharges": 0.0,
                 "trades": 0
             },
-            "valuesByStat": {},
+            "valuesByStat": {
+                "0": 410.0,
+                "1": 92.0,
+                "2": 0.22439024,
+                "20": 69.0,
+                "21": 55.0,
+                "23": 20.0,
+                "34": 133.0,
+                "35": 198.0,
+                "37": 46.0,
+                "39": 18.0,
+                "41": 1.44360902,
+                "45": 23.0,
+                "47": 4.66917293,
+                "48": 43.0,
+                "5": 15.0,
+                "53": 2.0,
+                "57": 10.0,
+                "60": 2.0,
+                "83": 12.0
+            },
             "waiverRank": 8
         }
     ]

@@ -3,13 +3,9 @@ import logging
 import pandas as pd
 import plotly.graph_objs as go
 import streamlit as st
-from pandas.api.types import (
-    is_datetime64_any_dtype,
-    is_numeric_dtype,
-    is_object_dtype,
-)
 
 from data.espn_mlb_utilities import get_category_stats
+from utils.ui import filter_dataframe
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -39,42 +35,6 @@ def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_w
         st.error("Failed to load category statistics. See logs for details.")
         return pd.DataFrame()
 
-
-def filter_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Adds UI for filtering the dataframe based on columns."""
-    if not st.checkbox("Filter DataFrame", value=True):
-        return df
-
-    df_filtered = df.copy()
-
-    for col in df_filtered.columns:
-        if is_object_dtype(df_filtered[col]):
-            try:
-                df_filtered[col] = pd.to_datetime(df_filtered[col], format="%m/%d/%Y")
-            except Exception:
-                pass
-        elif is_datetime64_any_dtype(df_filtered[col]):
-            if df_filtered[col].dt.tz is not None:
-                df_filtered[col] = df_filtered[col].dt.tz_localize(None)
-
-    filter_cols = st.multiselect("Filter by", df_filtered.columns, default=["Team Names"] if "Team Names" in df_filtered.columns else None)
-    
-    for col in filter_cols:
-        if df_filtered[col].nunique() < 15:
-            default_vals = ["RP's, We Have Da Heat"] if col == "Team Names" else list(df_filtered[col].unique())
-            valid_defaults = [val for val in default_vals if val in df_filtered[col].unique()]
-            
-            selected = st.multiselect(f"{col}", list(df_filtered[col].unique()), default=valid_defaults)
-            df_filtered = df_filtered[df_filtered[col].isin(selected)]
-        elif is_numeric_dtype(df_filtered[col]):
-            try:
-                min_val, max_val = float(df_filtered[col].min()), float(df_filtered[col].max())
-                selected_range = st.slider(f"{col} range", min_val, max_val, (min_val, max_val))
-                df_filtered = df_filtered[df_filtered[col].between(*selected_range)]
-            except Exception as e:
-                logger.warning(f"Error creating slider for column {col}: {e}")
-
-    return df_filtered
 
 
 def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame):
@@ -150,7 +110,7 @@ def main():
         st.warning("No category data available to display.")
         return
 
-    filtered_df = filter_dataframe(df)
+    filtered_df = filter_dataframe(df, key_prefix="category_rolling")
 
     # --- Download Option ---
     csv = filtered_df.to_csv(index=False).encode("utf-8")

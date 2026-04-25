@@ -153,6 +153,10 @@ def get_roster_info(mRoster: Dict, mTeams: Dict) -> pd.DataFrame:
 
     teamIds_player_df = pd.DataFrame(records)
 
+    if teamIds_player_df.empty:
+        logger.warning("No valid player records extracted from mRoster.")
+        return pd.DataFrame()
+
     teamNames_df = get_league_info(mTeams)
     if teamNames_df.empty:
         logger.warning("Could not retrieve league info")
@@ -355,3 +359,151 @@ def get_category_stats(league_id: int, year: int, scoring_period_id: int) -> pd.
     except Exception as e:
         logger.exception(f"Error in get_category_stats for league_id={league_id}, year={year}, scoring_period_id={scoring_period_id}")
         return pd.DataFrame()  # Return an empty DataFrame on error
+
+
+def get_standings_table(mTeam_data: Dict, category_stats_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Builds a standings table combining H2H season record with season-to-date
+    cumulative category stats for each team.
+
+    Args:
+        mTeam_data (Dict): Parsed mTeam JSON from the ESPN API.
+        category_stats_df (pd.DataFrame): Long-format DataFrame returned by
+            get_category_stats(), containing columns:
+            'Team Names', 'Stat Name', 'Score', 'matchupPeriodId'.
+
+    Returns:
+        pd.DataFrame: Wide-format standings table with columns:
+            Rank, Team, Wins, Losses, Ties, GB, and one column per TARGET_STAT.
+            Sorted by Rank (playoff seed). Returns an empty DataFrame on error.
+    """
+    try:
+        teams = mTeam_data.get("teams", [])
+        if not teams:
+            logger.warning("mTeam_data contains no teams.")
+            return pd.DataFrame()
+
+        # --- Build H2H record from mTeam ---
+        # NOTE: Use "Wins"/"Losses"/"Ties" (not "W"/"L"/"T") to avoid a column-
+        # name collision with the pitching "W" (Wins) scoring category.
+        records = []
+        for team in teams:
+            overall = team.get("record", {}).get("overall", {})
+            records.append({
+                "Team Names": team.get("name", "Unknown"),
+                "Rank": team.get("playoffSeed", 0),
+                "Wins": overall.get("wins", 0),
+                "Losses": overall.get("losses", 0),
+                "Ties": overall.get("ties", 0),
+                "GB": overall.get("gamesBack", 0.0),
+            })
+        standings_df = pd.DataFrame(records)
+
+        # --- Pivot category stats: season-to-date per team ---
+        if category_stats_df.empty:
+            logger.warning("category_stats_df is empty; standings will show record only.")
+            return standings_df.sort_values("Rank").reset_index(drop=True)
+
+        ratio_stats = {"AVG", "ERA", "WHIP"}
+        count_stats = set(TARGET_STATS) - ratio_stats
+
+        # Season totals for counting stats (sum across all weeks)
+        scoring_stats = category_stats_df[
+            category_stats_df["Stat Name"].isin(count_stats)
+        ].copy()
+        totals = (
+            scoring_stats
+            .groupby(["Team Names", "Stat Name"])["Score"]
+            .sum()
+            .reset_index()
+        )
+
+        # Season-to-date ratio stats recalculated from component sums.
+        # Using the latest week's ratio values can be unreliable because the
+        # current (incomplete) matchup week is always present in mBoxscore with
+        # zero component data.  Recomputing from components avoids that problem.
+        all_stats = category_stats_df.copy()
+
+        def _season_sum(stat_name: str) -> pd.Series:
+            """Return season-to-date sum of a component stat, indexed by Team Names."""
+            rows = all_stats[all_stats["Stat Name"] == stat_name]
+            return rows.groupby("Team Names")["Score"].sum()
+
+        h    = _season_sum("H")
+        ab   = _season_sum("AB")
+        er   = _season_sum("ER")
+        outs = _season_sum("OUTS")
+        pbb  = _season_sum("P_BB")
+        ph   = _season_sum("P_H")
+
+        def _safe_div(numerator: pd.Series, denominator: pd.Series) -> pd.Series:
+            result = numerator.div(denominator).replace([np.inf, -np.inf], np.nan).fillna(0)
+            return result
+
+        avg_series  = _safe_div(h, ab)
+        ip_series   = outs / 3  # Innings Pitched
+        era_series  = _safe_div(er, ip_series) * 9
+        whip_series = _safe_div(pbb + ph, ip_series)
+
+        team_index = standings_df["Team Names"]
+        ratio_rows = []
+        for team in team_index:
+            ratio_rows.append({"Team Names": team, "Stat Name": "AVG",  "Score": avg_series.get(team, 0.0)})
+            ratio_rows.append({"Team Names": team, "Stat Name": "ERA",  "Score": era_series.get(team, 0.0)})
+            ratio_rows.append({"Team Names": team, "Stat Name": "WHIP", "Score": whip_series.get(team, 0.0)})
+
+        ratios = pd.DataFrame(ratio_rows)
+
+        combined = pd.concat([totals, ratios], ignore_index=True)
+
+        # Pivot to wide format
+        pivot = combined.pivot_table(
+            index="Team Names", columns="Stat Name", values="Score", aggfunc="first"
+        ).reset_index()
+        pivot.columns.name = None
+
+        # Reorder stat columns to match TARGET_STATS order
+        stat_cols = [s for s in TARGET_STATS if s in pivot.columns]
+        pivot = pivot[["Team Names"] + stat_cols]
+
+        # Round counting stats for display
+        for col in stat_cols:
+            if col not in ratio_stats:
+                pivot[col] = pivot[col].round(1)
+
+        # --- Build ratio component columns (season totals) ---
+        # H, AB → AVG components; ER, IP (OUTS÷3) → ERA; BB (P_BB), HA (P_H) → WHIP
+        component_data = {
+            "H":  h,
+            "AB": ab,
+            "ER": er,
+            "IP": (outs / 3).round(1),
+            "BB": pbb,
+            "HA": ph,
+        }
+        components_df = pd.DataFrame(
+            {col: standings_df["Team Names"].map(series) for col, series in component_data.items()}
+        )
+        for col in ["H", "AB", "ER", "BB", "HA"]:
+            components_df[col] = components_df[col].round(0).astype("Int64")
+
+        # --- Merge record + category stats + components ---
+        result = standings_df.merge(pivot, on="Team Names", how="left")
+        result = pd.concat(
+            [result.reset_index(drop=True), components_df.reset_index(drop=True)],
+            axis=1,
+        )
+
+        # Sort by Rank (playoff seed, 1 = best)
+        result = result.sort_values("Rank").reset_index(drop=True)
+
+        # Reorder columns: Rank, Team, Wins, Losses, Ties, GB, stats, then components
+        component_cols = ["H", "AB", "ER", "IP", "BB", "HA"]
+        col_order = ["Rank", "Team Names", "Wins", "Losses", "Ties", "GB"] + stat_cols + component_cols
+        result = result[[c for c in col_order if c in result.columns]]
+
+        return result
+
+    except Exception as e:
+        logger.exception("Error in get_standings_table")
+        return pd.DataFrame()
