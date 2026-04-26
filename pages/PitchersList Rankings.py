@@ -9,15 +9,11 @@ import streamlit as st
 from data.fetch_pitcherlist_ranking import get_pitcherlist_tables
 from data.fetch_pitcherlist_sitstart import fetch_sit_start_data
 from utils.rankings_utilities import clean_players_names
-from utils.ui import (
-    inject_notion_css,
-    notion_page_header,
-    notion_section_header,
-    notion_card_begin,
-    notion_card_end,
-    notion_spacer,
-    filter_dataframe,
-)
+from components.layout import page_scaffold, spacer
+from components.typography import section_header
+from components.cards import notion_card, kv_card
+from components.tables import data_table
+from components.empty_states import no_data_card
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -128,56 +124,46 @@ def fetch_and_clean_rankings(urls: Dict[str, str], roster_df: pd.DataFrame) -> D
 
 def render_settings_tab():
     """Renders the settings tab to update the URLs."""
-    notion_section_header("Update PitcherList URLs", "Change the source URLs for each ranking table.")
+    section_header("Update PitcherList URLs", "Change the source URLs for each ranking table.")
 
-    notion_card_begin()
+    with notion_card():
+        keys = ["sp_100_df", "sh_100_df", "hitters_150_df", "sit_start_df"]
+        labels = ["Top 100 SP URL", "Top 100 RP URL", "Top 150 Hitters URL", "Start / Sit URL"]
 
-    keys = ["sp_100_df", "sh_100_df", "hitters_150_df", "sit_start_df"]
-    labels = ["Top 100 SP URL", "Top 100 RP URL", "Top 150 Hitters URL", "Start / Sit URL"]
+        for key, label in zip(keys, labels):
+            st.session_state.rankings_urls[key] = st.text_input(
+                label=label, 
+                value=st.session_state.rankings_urls.get(key, ""), 
+                key=f"url_input_{key}"
+            )
 
-    for key, label in zip(keys, labels):
-        st.session_state.rankings_urls[key] = st.text_input(
-            label=label, 
-            value=st.session_state.rankings_urls.get(key, ""), 
-            key=f"url_input_{key}"
-        )
+        spacer(8)
 
-    notion_spacer(8)
+        if st.button("Save Updated URLs"):
+            try:
+                with open(URLS_FILE, "w") as f:
+                    json.dump(st.session_state.rankings_urls, f, indent=4)
+                st.success("URLs saved! They will persist next time you run the dashboard.")
+                logger.info(f"Successfully saved updated URLs to {URLS_FILE}")
+            except Exception as e:
+                logger.error(f"Failed to save URLs: {e}")
+                st.error(f"Failed to save URLs: {e}")
 
-    if st.button("Save Updated URLs"):
-        try:
-            with open(URLS_FILE, "w") as f:
-                json.dump(st.session_state.rankings_urls, f, indent=4)
-            st.success("URLs saved! They will persist next time you run the dashboard.")
-            logger.info(f"Successfully saved updated URLs to {URLS_FILE}")
-        except Exception as e:
-            logger.error(f"Failed to save URLs: {e}")
-            st.error(f"Failed to save URLs: {e}")
+    spacer(16)
 
-    notion_card_end()
-
-    notion_spacer(16)
-
-    # Display current URLs
-    notion_card_begin("Current URLs")
-    for key, url in st.session_state.rankings_urls.items():
-        st.markdown(
-            f'<p style="margin:4px 0;"><span style="font-size:12px; color:#6F6F6F; '
-            f'text-transform:uppercase; letter-spacing:0.04em;">{TAB_LABELS.get(key, key)}</span><br/>'
-            f'<span style="font-size:13px; color:#2F2F2F; word-break:break-all;">{url}</span></p>',
-            unsafe_allow_html=True,
-        )
-    notion_card_end()
+    # Display current URLs using kv_card
+    kv_card(
+        "Current URLs",
+        {TAB_LABELS.get(k, k): url for k, url in st.session_state.rankings_urls.items()},
+    )
 
 
 def main():
     """Main Streamlit page logic."""
-    st.set_page_config(page_title="PitchersList SP100", layout="wide")
-    inject_notion_css()
-
-    notion_page_header(
+    page_scaffold(
         PAGE_TITLE,
         "Rankings from PitcherList.com, cross-referenced with your ESPN roster.",
+        page_title="PitchersList SP100",
     )
 
     # Ensure URLs are loaded into session state
@@ -185,13 +171,7 @@ def main():
         st.session_state.rankings_urls = load_urls()
 
     if "ROSTERS_DF" not in st.session_state or st.session_state["ROSTERS_DF"].empty:
-        notion_card_begin()
-        st.markdown(
-            '<p style="font-size:14px; color:#6F6F6F;">No roster data available. '
-            'Return to the home page and click <strong>Fetch Latest Data</strong>.</p>',
-            unsafe_allow_html=True,
-        )
-        notion_card_end()
+        no_data_card()
         return
         
     roster_df = st.session_state["ROSTERS_DF"]
@@ -203,32 +183,24 @@ def main():
     tab_names = [TAB_LABELS[k] for k in valid_keys] + [TAB_LABELS["settings"]]
     
     if tab_names:
-        notion_spacer(8)
+        spacer(8)
         tabs = st.tabs(tab_names)
 
         # Render ranking tabs
         for i, key in enumerate(valid_keys):
             with tabs[i]:
-                notion_spacer(8)
-                df = rankings_dict[key]
-                filtered_df = filter_dataframe(df, key)
-
-                notion_card_begin()
-                st.dataframe(filtered_df, use_container_width=True, hide_index=True)
-
-                notion_spacer(8)
-                csv_data = filtered_df.to_csv(index=False).encode("utf-8")
-                st.download_button(
-                    label=f"Download {TAB_LABELS[key]} CSV",
-                    data=csv_data,
-                    file_name=f"{TAB_LABELS[key].replace(' ', '_')}.csv",
-                    mime="text/csv",
+                spacer(8)
+                data_table(
+                    rankings_dict[key],
+                    key_prefix=key,
+                    enable_download=True,
+                    download_filename=f"{TAB_LABELS[key].replace(' ', '_')}.csv",
+                    download_label=f"Download {TAB_LABELS[key]} CSV",
                 )
-                notion_card_end()
 
         # Render settings tab (the last tab)
         with tabs[-1]:
-            notion_spacer(8)
+            spacer(8)
             render_settings_tab()
     else:
         st.warning("No rendering tabs available.")

@@ -9,8 +9,8 @@ VIEWLIST = ('mTeam', 'mRoster', 'mBoxscore')
 DEFAULT_YEAR = 2026
 DEFAULT_SCORING_PERIOD_WEEK = 14
 DEFAULT_LEAGUE_ID = 64175
-DEFAULT_ESPN_S2 ='AEAxz37BvE%2B1ljLaXEBgDEU2ecOl9nvEC9VSgBVJFfH8jH3dYjSjvbu5h61LBOSwjmlNp5QjcMP2NkhQ0%2Btum%2Fqf6FOn2yzkzWXqYqlYjC9uOaZ8HWnN4WFOLlzTFVv8N%2BgFFW4yhQlHkjdYOwQaer6bPxJ5qAZZgDhBw1oYJOGSpCQtZsXPBNf5hx95%2Fe83r%2BdIk%2BboVPllCMjbhopZOqK8B2nrwGpjJveJ%2BPL5tq0d0RNdErAJqhK7sK5iu6hkC9j%2Bz9udlVMm%2FcYQWMsAXVBz'
-DEFAULT_SWID ='{3F15FCEB-EB45-4EE7-B1B1-92B76369484D}'
+DEFAULT_ESPN_S2 = ''
+DEFAULT_SWID = ''
 # File path for storing PitcherList URLs (used by pages/PitcherList_Rankings.py)
 URLS_FILE = "data/pitcherlist_urls.json"
 
@@ -42,6 +42,10 @@ STATS_LOW_IS_BETTER = {'ERA', 'WHIP'}
 import os
 from typing import Optional
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 

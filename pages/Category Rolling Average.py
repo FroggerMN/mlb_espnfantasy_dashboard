@@ -5,17 +5,12 @@ import plotly.graph_objs as go
 import streamlit as st
 
 from data.espn_mlb_utilities import get_category_stats
-from utils.ui import (
-    inject_notion_css,
-    notion_page_header,
-    notion_section_header,
-    notion_card_begin,
-    notion_card_end,
-    notion_spacer,
-    filter_dataframe,
-    NOTION_COLORS,
-    PLOTLY_LAYOUT_DEFAULTS,
-)
+from components.layout import page_scaffold, spacer
+from components.typography import section_header
+from components.charts import plotly_card
+from components.filters import filter_dataframe
+from components.empty_states import missing_config_card
+from components._tokens import COLORS, PLOTLY_LAYOUT_DEFAULTS
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -48,7 +43,7 @@ def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_w
 
 
 def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame):
-    """Renders the Plotly charts for each statistic category in Notion-styled cards."""
+    """Renders the Plotly charts for each statistic category using plotly_card."""
     stat_categories = sorted(df["Stat Name"].unique())
 
     # Render in a 2-column grid
@@ -93,38 +88,26 @@ def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame):
             logger.warning(f"Error drawing benchmarks for stat {stat}: {e}")
 
         fig.update_layout(
-            title=dict(text=f"{stat} — 3-Week Rolling Avg", font=dict(size=15, color=NOTION_COLORS["text_primary"])),
-            height=380,
+            title=dict(text=f"{stat} — 3-Week Rolling Avg", font=dict(size=15, color=COLORS["text_primary"])),
             showlegend=True,
-            **PLOTLY_LAYOUT_DEFAULTS,
         )
 
         with cols[idx % 2]:
-            notion_card_begin()
-            st.plotly_chart(fig, use_container_width=True)
-            notion_card_end()
+            plotly_card(fig, key=f"chart_{stat}_{idx}")
 
 
 def main():
     """Main Streamlit page logic."""
-    st.set_page_config(page_title="Categories", layout="wide")
-    inject_notion_css()
-
-    notion_page_header(
+    page_scaffold(
         PAGE_TITLE,
         "Track 3-week rolling averages across all scoring categories for each team.",
+        page_title="Categories",
     )
 
     # --- League Info ---
     required_keys = ["YEAR", "LEAGUE_ID", "SCORING_PERIOD_ID"]
     if any(k not in st.session_state for k in required_keys):
-        notion_card_begin()
-        st.markdown(
-            '<p style="font-size:14px; color:#6F6F6F;">Missing required league information. '
-            'Return to the home page and configure your league settings.</p>',
-            unsafe_allow_html=True,
-        )
-        notion_card_end()
+        missing_config_card()
         return
 
     year = st.session_state.YEAR
@@ -138,15 +121,15 @@ def main():
         st.warning("No category data available to display.")
         return
 
-    notion_spacer(8)
+    spacer(8)
     filtered_df = filter_dataframe(df, key_prefix="category_rolling")
 
     # --- Download Option ---
-    notion_spacer(4)
+    spacer(4)
     csv = filtered_df.to_csv(index=False).encode("utf-8")
     st.download_button("Download CSV", csv, "category_trends.csv", "text/csv")
 
-    notion_spacer(8)
+    spacer(8)
 
     # --- Plot ---
     render_plots(df, filtered_df)
