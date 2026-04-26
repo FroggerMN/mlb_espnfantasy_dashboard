@@ -301,6 +301,22 @@ def main():
 
     spacer(8)
 
+    # --- League Configuration Help (collapsed by default) ---
+    with st.expander("League Configuration Help", expanded=False):
+        st.markdown("""
+**How to find your League ID:**
+You can find your League ID in the URL of your fantasy league. For example: `https://fantasy.espn.com/baseball/league?leagueId=64175&seasonId=2026`. The number after `leagueId=` is your League ID.
+
+**How to find your SWID and ESPN_S2 cookies:**
+1. Log into your ESPN account on ESPN's website.
+2. Right-click anywhere on the page and select **Inspect**.
+3. In the developer tools, click the **Application** tab on the top bar.
+4. On the left side under the **Storage** section, expand **Cookies** and click on `http://fantasy.espn.com` (or `https://fantasy.espn.com`).
+5. In the table, search for the `SWID` and `ESPN_S2` variables to find your values.
+        """)
+
+    spacer(8)
+
     # --- League Configuration Panel (moved from sidebar) ---
     render_config_panel()
 
