@@ -15,12 +15,13 @@ import logging
 # Initialize logger
 logger = logging.getLogger(__name__)
 
-# Consider moving this to a config file or database for easier updates
-# Or make it user-configurable via the Streamlit UI
+from utils.config import DEFAULT_RANKINGS_URLS
+
+# Dynamic loading from config
 PITCHERLIST_RANKINGS_LIST: List[Tuple[str, int, str]] = [
-    ('https://pitcherlist.com/top-100-starting-pitchers-for-2025-fantasy-baseball-week-8-5-19/', 0, 'sp_100_df'),
-    ('https://pitcherlist.com/rp-ranks-5-23-the-top-100-relievers-for-savehold-leagues//', 2, 'sh_100_df'),
-    ('https://pitcherlist.com/top-150-hitters-for-fantasy-baseball-2025-week-8-5-22/', 0, 'hitters_150_df')
+    (DEFAULT_RANKINGS_URLS.get('sp_100_df', ''), 0, 'sp_100_df'),
+    (DEFAULT_RANKINGS_URLS.get('sh_100_df', ''), 2, 'sh_100_df'),
+    (DEFAULT_RANKINGS_URLS.get('hitters_150_df', ''), 0, 'hitters_150_df')
 ]
 
 def get_pitcherlist_tables(url: str, table_index: int = 0) -> pd.DataFrame:

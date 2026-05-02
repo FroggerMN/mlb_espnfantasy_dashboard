@@ -62,7 +62,7 @@ You can find your League ID in the URL of your fantasy league. For example: `htt
 5. In the table, search for the `SWID` and `ESPN_S2` variables to find your values.
         """)
 
-    spacer(8)
+    #spacer(8)
 
     with notion_card():
         # Row 1: League settings
@@ -305,7 +305,7 @@ def main():
         "Configure your league below, fetch data, then explore analysis pages from the sidebar.",
     )
 
-    spacer(8)
+    spacer(2)
 
     # --- Getting Started (collapsed by default) ---
     with st.expander("Getting Started", expanded=False):
@@ -315,7 +315,7 @@ def main():
 3. Navigate to the analysis pages in the sidebar — *Athletic Rankings*, *Category Rolling Average*, *PitchersList Rankings*.
         """)
 
-    spacer(8)
+    spacer(2)
 
 
     # --- League Configuration Panel (moved from sidebar) ---
