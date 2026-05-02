@@ -10,14 +10,9 @@ from pandas.api.types import (
 )
 
 from utils.rankings_utilities import clean_players_names
-from utils.ui import (
-    inject_notion_css,
-    notion_page_header,
-    notion_card_begin,
-    notion_card_end,
-    notion_spacer,
-    filter_dataframe,
-)
+from components.layout import page_scaffold, spacer
+from components.tables import data_table
+from components.empty_states import no_data_card
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -77,22 +72,14 @@ def load_and_process_rankings(file_list: List[str], roster_df: pd.DataFrame) -> 
 
 def main():
     """Main Streamlit page logic."""
-    st.set_page_config(page_title=PAGE_TITLE, layout="wide")
-    inject_notion_css()
-
-    notion_page_header(
+    page_scaffold(
         PAGE_TITLE,
         "Player rankings sourced from The Athletic, cross-referenced with your roster.",
+        page_title=PAGE_TITLE,
     )
 
     if SESSION_STATE_ROSTER_KEY not in st.session_state or st.session_state[SESSION_STATE_ROSTER_KEY].empty:
-        notion_card_begin()
-        st.markdown(
-            '<p style="font-size:14px; color:#6F6F6F;">No roster data available. '
-            'Return to the home page and click <strong>Fetch Latest Data</strong>.</p>',
-            unsafe_allow_html=True,
-        )
-        notion_card_end()
+        no_data_card()
         return
 
     roster_df = st.session_state[SESSION_STATE_ROSTER_KEY]
@@ -108,16 +95,13 @@ def main():
         st.warning("No ranking data could be processed.")
         return
 
-    notion_spacer(8)
+    spacer(8)
     tabs = st.tabs(list(rankings_dict.keys()))
 
     for i, (key, df) in enumerate(rankings_dict.items()):
         with tabs[i]:
-            notion_spacer(8)
-            filtered_df = filter_dataframe(df, key)
-            notion_card_begin()
-            st.dataframe(filtered_df, use_container_width=True, hide_index=True)
-            notion_card_end()
+            spacer(8)
+            data_table(df, key_prefix=key)
 
 
 if __name__ == "__main__":

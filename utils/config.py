@@ -9,19 +9,27 @@ VIEWLIST = ('mTeam', 'mRoster', 'mBoxscore')
 DEFAULT_YEAR = 2026
 DEFAULT_SCORING_PERIOD_WEEK = 14
 DEFAULT_LEAGUE_ID = 64175
-DEFAULT_ESPN_S2 ='AEAxz37BvE%2B1ljLaXEBgDEU2ecOl9nvEC9VSgBVJFfH8jH3dYjSjvbu5h61LBOSwjmlNp5QjcMP2NkhQ0%2Btum%2Fqf6FOn2yzkzWXqYqlYjC9uOaZ8HWnN4WFOLlzTFVv8N%2BgFFW4yhQlHkjdYOwQaer6bPxJ5qAZZgDhBw1oYJOGSpCQtZsXPBNf5hx95%2Fe83r%2BdIk%2BboVPllCMjbhopZOqK8B2nrwGpjJveJ%2BPL5tq0d0RNdErAJqhK7sK5iu6hkC9j%2Bz9udlVMm%2FcYQWMsAXVBz'
-DEFAULT_SWID ='{3F15FCEB-EB45-4EE7-B1B1-92B76369484D}'
 # File path for storing PitcherList URLs (used by pages/PitcherList_Rankings.py)
-URLS_FILE = "data/pitcherlist_urls.json"
+URLS_FILE = "data/pitcherslist_urls.json"
 
 # Default PitcherList URLs (initial values, can be updated via UI)
 # These are the *default* initial URLs.
 # The application logic handles saving/loading them from URLS_FILE.
-DEFAULT_RANKINGS_URLS = {
-    'sp_100_df': 'https://pitcherlist.com/top-100-starting-pitchers-for-2025-fantasy-baseball-week-8-5-19/',
-    'sh_100_df': 'https://pitcherlist.com/rp-ranks-5-23-the-top-100-relievers-for-savehold-leagues//',
-    'hitters_150_df': 'https://pitcherlist.com/top-150-hitters-for-fantasy-baseball-2025-week-8-5-22/',
-}
+def _load_default_urls():
+    import os, json
+    if os.path.exists(URLS_FILE):
+        try:
+            with open(URLS_FILE, 'r') as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {
+        'sp_100_df': 'https://pitcherlist.com/top-100-starting-pitchers-for-2025-fantasy-baseball-week-8-5-19/',
+        'sh_100_df': 'https://pitcherlist.com/rp-ranks-5-23-the-top-100-relievers-for-savehold-leagues//',
+        'hitters_150_df': 'https://pitcherlist.com/top-150-hitters-for-fantasy-baseball-2025-week-8-5-22/',
+    }
+
+DEFAULT_RANKINGS_URLS = _load_default_urls()
 
 # Supported fantasy stat categories for the 10-category league
 # (Centralized here as they are core to the league's definition)
@@ -42,6 +50,10 @@ STATS_LOW_IS_BETTER = {'ERA', 'WHIP'}
 import os
 from typing import Optional
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -51,8 +63,8 @@ def get_env_or_default(key: str, default: str) -> str:
 
 # Allow overrides via environment variables
 DEFAULT_LEAGUE_ID = int(get_env_or_default('ESPN_LEAGUE_ID', '64175'))
-DEFAULT_ESPN_S2 = get_env_or_default('ESPN_S2', DEFAULT_ESPN_S2)
-DEFAULT_SWID = get_env_or_default('ESPN_SWID', DEFAULT_SWID)
+DEFAULT_ESPN_S2 = get_env_or_default('ESPN_S2', '')
+DEFAULT_SWID = get_env_or_default('ESPN_SWID', '')
 
 def validate_config() -> bool:
     """Validate configuration values."""
