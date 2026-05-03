@@ -347,6 +347,11 @@ def get_category_stats(league_id: int, year: int, scoring_period_id: int) -> pd.
             raise ValueError("mBoxscore JSON is missing required keys: 'schedule' or 'teams'.")
 
         schedule = pd.json_normalize(data['schedule'])[:-6]  # Drop playoff matchups
+        
+        # Exclude Week 1 (incomplete data) to prevent standings imbalance
+        if 'matchupPeriodId' in schedule.columns:
+            schedule = schedule[schedule['matchupPeriodId'] != 1]
+            
         teams = pd.json_normalize(data['teams'])
 
         # Extract and compute
