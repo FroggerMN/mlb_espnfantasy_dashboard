@@ -22,7 +22,8 @@ def data_table(
     download_label: str = "Download CSV",
     height: int | None = None,
     hide_index: bool = True,
-) -> pd.DataFrame:
+    enable_selection: bool = False,
+) -> pd.DataFrame | tuple[pd.DataFrame, list[int]]:
     """
     All-in-one data table: filter bar → card-wrapped ``st.dataframe`` →
     optional CSV download button.
@@ -55,10 +56,15 @@ def data_table(
 
     # Card-wrapped dataframe
     with notion_card():
-        kwargs = {"width": "stretch", "hide_index": hide_index}
+        kwargs = {"use_container_width": True, "hide_index": hide_index}
         if height is not None:
             kwargs["height"] = height
-        st.dataframe(filtered_df, **kwargs)
+            
+        if enable_selection:
+            kwargs["on_select"] = "rerun"
+            kwargs["selection_mode"] = "multi-row"
+            
+        selection = st.dataframe(filtered_df, **kwargs)
 
         # Download button
         if enable_download:
@@ -71,4 +77,6 @@ def data_table(
                 mime="text/csv",
             )
 
+    if enable_selection:
+        return filtered_df, selection.selection.rows
     return filtered_df
