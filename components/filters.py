@@ -90,7 +90,7 @@ def filter_dataframe(
                 if df_filtered[column].nunique() < 15:
                     # Categorical / low-cardinality → multiselect
                     if column == "Team Names":
-                        default_vals = [v for v in [default_team, "Available"] if v in unique_vals]
+                        default_vals = [v for v in [default_team, "Available", "League Average"] if v in unique_vals]
                     else:
                         default_vals = list(unique_vals)
 

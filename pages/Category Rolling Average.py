@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 
 import pandas as pd
 import plotly.graph_objs as go
@@ -11,6 +12,7 @@ from components.charts import plotly_card
 from components.filters import filter_dataframe
 from components.empty_states import missing_config_card
 from components._tokens import COLORS, PLOTLY_LAYOUT_DEFAULTS
+from utils.config import TARGET_STATS
 
 # --- Initialize logger ---
 logger = logging.getLogger(__name__)
@@ -20,7 +22,7 @@ PAGE_TITLE = "Category Rolling Trends"
 DEFAULT_MAX_WEEK = 14
 
 @st.cache_data
-def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_week: int) -> pd.DataFrame:
+def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_week: int, rolling_window: int) -> pd.DataFrame:
     """Loads and processes category statistics."""
     try:
         df = get_category_stats(league_id, year, scoring_period_id)
@@ -29,12 +31,69 @@ def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_w
             return df
             
         df = df[df['matchupPeriodId'] <= max_week]
-        df = df.sort_values(["Stat Name", "Team Names", "matchupPeriodId"])
-        df["Rolling_Ave(3)"] = df.groupby(["Stat Name", "Team Names"])["Score"].transform(
-            lambda x: x.rolling(3, min_periods=3).mean()
-        )
+        
+        def compute_rolling(data_df, team_col):
+            data_df = data_df.sort_values([team_col, "Stat Name", "matchupPeriodId"])
+            ratio_stats = {"AVG", "ERA", "WHIP"}
+            components = ["H", "AB", "ER", "OUTS", "P_BB", "P_H"]
+            results = []
+            
+            grouped = data_df.groupby([team_col, "Stat Name"])
+            for name, group in grouped:
+                g = group.copy()
+                stat = name[1]
+                
+                # Use sum for ratio stat calculations
+                if stat in components:
+                    g["Rolling_Sum"] = g["Score"].rolling(rolling_window, min_periods=1).sum()
+                else:
+                    g["Rolling_Sum"] = np.nan
+                    
+                # Use mean for everything else (for the charts)
+                if stat not in ratio_stats:
+                    g["Rolling_Value"] = g["Score"].rolling(rolling_window, min_periods=1).mean()
+                else:
+                    g["Rolling_Value"] = np.nan
+                results.append(g)
+                
+            res_df = pd.concat(results, ignore_index=True)
+            pivot = res_df.pivot_table(index=[team_col, "matchupPeriodId"], columns="Stat Name", values="Rolling_Sum").reset_index()
+            
+            if "H" in pivot.columns and "AB" in pivot.columns:
+                pivot["AVG"] = (pivot["H"] / pivot["AB"]).replace([np.inf, -np.inf], 0).fillna(0)
+            if "ER" in pivot.columns and "OUTS" in pivot.columns:
+                pivot["ERA"] = ((pivot["ER"] / (pivot["OUTS"] / 3)) * 9).replace([np.inf, -np.inf], 0).fillna(0)
+            if "P_BB" in pivot.columns and "P_H" in pivot.columns and "OUTS" in pivot.columns:
+                pivot["WHIP"] = ((pivot["P_BB"] + pivot["P_H"]) / (pivot["OUTS"] / 3)).replace([np.inf, -np.inf], 0).fillna(0)
+                
+            melted = pivot.melt(id_vars=[team_col, "matchupPeriodId"], value_vars=[s for s in ratio_stats if s in pivot.columns], var_name="Stat Name", value_name="Calculated_Rolling")
+            final_df = res_df.merge(melted, on=[team_col, "matchupPeriodId", "Stat Name"], how="left")
+            final_df[f"Rolling_Ave({rolling_window})"] = final_df["Calculated_Rolling"].combine_first(final_df["Rolling_Value"])
+            return final_df
+        
+        # 1. Individual Teams
+        team_df = compute_rolling(df, "Team Names")
+        
+        # 2. League Average
+        league_base = []
+        for (period, stat), group in df.groupby(["matchupPeriodId", "Stat Name"]):
+            val = group["Score"].mean()
+            league_base.append({"Team Names": "League Average", "matchupPeriodId": period, "Stat Name": stat, "Score": val})
+            
+        league_rolling = compute_rolling(pd.DataFrame(league_base), "Team Names")
+        
+        final_df = pd.concat([team_df, league_rolling], ignore_index=True)
+        
+        # Add IP stat
+        outs_df = final_df[final_df["Stat Name"] == "OUTS"].copy()
+        if not outs_df.empty:
+            outs_df["Stat Name"] = "IP"
+            outs_df["Score"] = outs_df["Score"] / 3
+            outs_df[f"Rolling_Ave({rolling_window})"] = outs_df[f"Rolling_Ave({rolling_window})"] / 3
+            final_df = pd.concat([final_df, outs_df], ignore_index=True)
+            
         logger.info(f"Successfully loaded category stats up to week {max_week}.")
-        return df
+        return final_df
     except Exception as e:
         logger.error(f"Error loading category stats: {e}")
         st.error("Failed to load category statistics. See logs for details.")
@@ -42,9 +101,10 @@ def load_category_stats(league_id: int, year: int, scoring_period_id: int, max_w
 
 
 
-def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame):
+def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame, rolling_window: int):
     """Renders the Plotly charts for each statistic category using plotly_card."""
-    stat_categories = sorted(df["Stat Name"].unique())
+    display_stats = TARGET_STATS + ["AB", "H", "IP"]
+    stat_categories = [s for s in display_stats if s in df["Stat Name"].unique()]
 
     # Render in a 2-column grid
     cols = st.columns(2)
@@ -56,40 +116,35 @@ def render_plots(df: pd.DataFrame, filtered_df: pd.DataFrame):
 
         fig = go.Figure()
 
-        for team in stat_df["Team Names"].unique():
+        # Get teams (excluding League Average)
+        teams = [t for t in stat_df["Team Names"].unique() if t != "League Average"]
+
+        for team in teams:
             team_data = stat_df[stat_df["Team Names"] == team]
             fig.add_trace(go.Scatter(
                 x=team_data["matchupPeriodId"],
-                y=team_data["Rolling_Ave(3)"],
+                y=team_data[f"Rolling_Ave({rolling_window})"],
                 mode="lines+markers",
                 name=team,
                 line=dict(width=2),
                 marker=dict(size=5),
             ))
 
-        # Add benchmark lines
-        try:
-            stat_ave = stat_df["Stat Ave"].iloc[0]
-            stat_win_ave = stat_df["Stat Win Ave"].iloc[0]
-            x_min, x_max = stat_df["matchupPeriodId"].min(), stat_df["matchupPeriodId"].max()
-
-            fig.add_shape(type="line", x0=x_min, x1=x_max, y0=stat_ave, y1=stat_ave,
-                          line=dict(color="#D97706", dash="dash", width=1.5))
-            fig.add_annotation(x=x_max, y=stat_ave, text=f"Avg: {stat_ave:.2f}",
-                               showarrow=False, yshift=10, font=dict(color="#D97706", size=11))
-
-            fig.add_shape(type="line", x0=x_min, x1=x_max, y0=stat_win_ave, y1=stat_win_ave,
-                          line=dict(color="#059669", dash="dash", width=1.5))
-            fig.add_annotation(x=x_max, y=stat_win_ave, text=f"Win: {stat_win_ave:.2f}",
-                               showarrow=False, yshift=-10, font=dict(color="#059669", size=11))
-        except IndexError:
-            logger.debug(f"Missing benchmark data for stat: {stat}")
-        except Exception as e:
-            logger.warning(f"Error drawing benchmarks for stat {stat}: {e}")
+        # Add League Average line
+        if "League Average" in stat_df["Team Names"].values:
+            league_data = stat_df[stat_df["Team Names"] == "League Average"]
+            fig.add_trace(go.Scatter(
+                x=league_data["matchupPeriodId"],
+                y=league_data[f"Rolling_Ave({rolling_window})"],
+                mode="lines",
+                name="League Average",
+                line=dict(width=3, color="#D97706", dash="dash"),
+            ))
 
         fig.update_layout(
-            title=dict(text=f"{stat} — 3-Week Rolling Avg", font=dict(size=15, color=COLORS["text_primary"])),
+            title=dict(text=f"{stat} — {rolling_window}-Week Rolling Avg", font=dict(size=15, color=COLORS["text_primary"])),
             showlegend=True,
+            xaxis=dict(title="Matchup Period", dtick=1),
         )
 
         with cols[idx % 2]:
@@ -115,7 +170,21 @@ def main():
     scoring_period_id = st.session_state.SCORING_PERIOD_ID
     max_week_to_show = st.session_state.get("SCORING_PERIOD_WEEK", DEFAULT_MAX_WEEK) - 1
 
-    df = load_category_stats(league_id, year, scoring_period_id, max_week_to_show)
+    # Add rolling window configuration
+    max_rolling_window = max(1, max_week_to_show - 2)
+    
+    spacer(4)
+    col1, _ = st.columns([1, 3])
+    with col1:
+        rolling_window = st.number_input(
+            "Rolling Average Window (Weeks)",
+            min_value=1,
+            max_value=max_rolling_window,
+            value=min(3, max_rolling_window),
+            step=1,
+        )
+
+    df = load_category_stats(league_id, year, scoring_period_id, max_week_to_show, rolling_window)
     
     if df.empty:
         st.warning("No category data available to display.")
@@ -132,7 +201,7 @@ def main():
     spacer(8)
 
     # --- Plot ---
-    render_plots(df, filtered_df)
+    render_plots(df, filtered_df, rolling_window)
 
 
 if __name__ == "__main__":
